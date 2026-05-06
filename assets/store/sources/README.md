@@ -1,37 +1,49 @@
-# Chrome Web Store screenshot sources
+# Chrome Web Store asset sources
 
-These HTML files are the source for the 1280×800 marketing screenshots used on
-the Chrome Web Store listing.
+These HTML files are the source for two sets of Chrome Web Store assets:
+
+- **Marketing screenshots** — 1280×800, used as listing screenshots.
+- **Promotional tiles** — 440×280, used as the small promo tile (category
+  cards, search results, featured-placement candidates).
 
 ## Files
 
-| Source | Output | Locale |
-|---|---|---|
-| `main-en.html` | `../main-en.png` | English |
-| `main-ko.html` | `../main-ko.png` | 한국어 |
-| `main-ja.html` | `../main-ja.png` | 日本語 |
-| `build.sh`     | (driver script) | rebuild all locales |
+| Source | Output | Locale | Size |
+|---|---|---|---|
+| `main-en.html`  | `../main-en.png`  | English | 1280×800 |
+| `main-ko.html`  | `../main-ko.png`  | 한국어  | 1280×800 |
+| `main-ja.html`  | `../main-ja.png`  | 日本語  | 1280×800 |
+| `promo-en.html` | `../promo-en.png` | English | 440×280  |
+| `promo-ko.html` | `../promo-ko.png` | 한국어  | 440×280  |
+| `promo-ja.html` | `../promo-ja.png` | 日本語  | 440×280  |
+| `build.sh`      | (driver script)   | —       | —        |
 
-Each HTML embeds the corresponding UI screenshot from a local copy
-(`preview-{en,ko,ja}.png`) so the folder is self-contained and previews
-correctly when opened directly in any browser. The local copies are kept in
-sync with the originals at `../../preview*.png`.
+`main-*.html` embeds the corresponding UI screenshot from a local copy
+(`preview-{en,ko,ja}.png`), kept in sync with the originals at
+`../../preview*.png`. `promo-*.html` embeds the app icon from a local copy
+(`icon128.png`), kept in sync with `../../../output/icons/icon128.png`. Both
+copies make this folder self-contained and previewable directly in any
+browser.
 
 ## Re-rendering — automated (recommended)
 
-Whenever the README screenshots at `../../preview*.png` change, just run:
-
 ```bash
-./build.sh           # rebuild all locales (en, ko, ja)
-./build.sh en        # rebuild a single locale
+./build.sh                # rebuild everything (main + promo, all locales)
+./build.sh en             # rebuild all assets for a single locale
+./build.sh main           # rebuild only main screenshots, all locales
+./build.sh promo          # rebuild only promo tiles, all locales
+./build.sh main en        # rebuild a single main screenshot
+./build.sh promo en       # rebuild a single promo tile
 ```
 
-`build.sh` performs both steps for you:
+`build.sh` performs the sync + render steps for you:
 
 1. Copies the latest `../../preview*.png` into this folder as
-   `preview-{en,ko,ja}.png` (so the HTML always uses up-to-date UI shots).
-2. Renders each `main-*.html` to `../main-*.png` at 1280×800 via headless
-   Chrome and verifies the output dimensions.
+   `preview-{en,ko,ja}.png` (used by `main-*.html`).
+2. Copies the latest `../../../output/icons/icon128.png` into this folder
+   as `icon128.png` (used by `promo-*.html`).
+3. Renders each HTML at the right size (1280×800 for main, 440×280 for
+   promo) via headless Chrome and verifies output dimensions.
 
 The script can be run from any working directory; paths are resolved relative
 to the script itself.
