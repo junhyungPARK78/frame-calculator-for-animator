@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="">
+<head>
+  <meta charset="UTF-8">
+  <title>프레임 계산기</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ── 상단 설정 바 ── -->
+  <div class="bar top-bar">
+    <div class="fps-group">
+      <span class="lbl">FPS</span>
+      <button class="fps-btn active" data-fps="24">24</button>
+      <button class="fps-btn" data-fps="30">30</button>
+      <button class="fps-btn" data-fps="60">60</button>
+      <input id="custom-fps" type="number" min="1" max="99" placeholder="커스텀" title="자연수 1~99">
+    </div>
+    <div class="num-mode-group">
+      <span class="lbl">숫자만 입력 시</span>
+      <button class="num-mode-btn active" data-mode="frame">프레임</button>
+      <button class="num-mode-btn" data-mode="sec">초</button>
+    </div>
+    <button id="btn-theme" title="라이트/다크 모드 전환">🌙</button>
+  </div>
+
+  <!-- ── 프로젝트 바 ── -->
+  <div class="bar proj-bar">
+    <span class="lbl">프로젝트</span>
+    <input id="proj-name" type="text" placeholder="이름 입력...">
+    <button id="btn-save-proj" class="btn-save" title="저장">저장</button>
+    <select id="proj-list"><option value="">불러오기 ▾</option></select>
+    <button id="btn-del-proj" class="btn-danger" title="프로젝트 삭제">✕</button>
+  </div>
+
+  <!-- ── 싱크 불가 경고 배너 ── -->
+  <div id="sync-warning" style="display:none">
+    <span class="sync-warning-icon">⚠</span>
+    <span class="sync-warning-msg">
+      이 프로젝트는 파일이 너무 커서 동기화할 수 없습니다. 이 기기에만 저장됩니다.
+      동기화를 원하면 프로젝트를 나눠서 작업하세요.
+    </span>
+  </div>
+
+  <!-- ── 테이블 ── -->
+  <div class="tbl-wrap">
+    <table id="frame-table">
+      <thead>
+        <tr>
+          <th class="col-sel">
+            <button id="btn-sel-all" title="전체 선택">✓</button>
+            <button id="btn-sel-none" title="전체 해제">✕</button>
+          </th>
+          <th class="col-id">컷 번호</th>
+          <th class="col-input">
+            <div>sec.frame 입력</div>
+            <label class="toggle-lz">
+              <span>앞자리 0</span>
+              <input id="leading-zero" type="checkbox" checked>
+            </label>
+          </th>
+          <th class="col-sec">초 (sec)</th>
+          <th class="col-act"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- ── 요약 / 하단 ── -->
+  <div class="bottom-bar">
+    <div id="summary">
+      <span id="sum-label">전체 합계</span>
+      <span id="sum-sec"></span>
+      <span id="sum-sf">0+00</span>
+      <span id="save-error"></span>
+    </div>
+    <button id="btn-add-row">＋ 행 추가</button>
+  </div>
+
+  <!-- ── 푸터 ── -->
+  <div class="footer-bar">
+    <span class="credit-text">제작자 : <a id="credit-link" class="credit">createzone</a></span>
+    <div class="io-group">
+      <button id="btn-import" title="JSON 파일에서 프로젝트 가져오기">가져오기</button>
+      <button id="btn-export" title="현재 프로젝트를 JSON으로 내보내기">내보내기</button>
+      <button id="btn-export-all" title="모든 프로젝트를 JSON으로 내보내기">전체 내보내기</button>
+      <input id="import-file" type="file" accept=".json">
+    </div>
+  </div>
+
+</div>
+<script src="lz-string.min.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
