@@ -1,10 +1,20 @@
 {
   "manifest_version": 3,
   "name": "Frame Calculator",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Frame/timecode calculator for animation production",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "action": {
-    "default_title": "Frame Calculator"
+    "default_title": "Frame Calculator",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   },
   "side_panel": {
     "default_path": "popup.html"
