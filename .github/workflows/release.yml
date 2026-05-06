@@ -25,7 +25,9 @@ jobs:
 
       - name: Get previous version
         id: previous
-        run: echo "version=$(git show HEAD~1:output/manifest.json | jq -r .version)" >> $GITHUB_OUTPUT
+        run: |
+          prev=$(git show HEAD~1:output/manifest.json 2>/dev/null | jq -r .version 2>/dev/null || echo "")
+          echo "version=$prev" >> $GITHUB_OUTPUT
 
       - name: Check version changed
         id: check
