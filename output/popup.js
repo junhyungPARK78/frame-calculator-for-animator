@@ -16,10 +16,150 @@ const G = {
   proj:       '',        // current project name ('' = auto)
   projects:   {},        // { name: snapshot }
   localProjs: new Set(), // sync 용량 초과로 local에만 저장된 프로젝트 키 집합
+  lang:       'ko',      // 'ko' | 'ja'
 };
 
 function newRow(input = '') {
   return { uid: G.uidNext++, input };
+}
+
+
+// ═══════════════════════════════════════════════
+// 다국어 (i18n)
+// ═══════════════════════════════════════════════
+
+const LANG = {
+  ko: {
+    customFpsPlaceholder: '커스텀',
+    customFpsTitle:       '자연수 1~99',
+    numModeLabel:         '숫자만 입력 시',
+    numModeFrame:         '프레임',
+    numModeSec:           '초',
+    themeTitle:           '라이트/다크 모드 전환',
+    projectLabel:         '프로젝트',
+    projNamePlaceholder:  '이름 입력...',
+    saveProjBtn:          '저장',
+    loadProjDefault:      '불러오기 ▾',
+    delProjTitle:         '프로젝트 삭제',
+    syncWarning:          '이 프로젝트는 파일이 너무 커서 동기화할 수 없습니다. 이 기기에만 저장됩니다. 동기화를 원하면 프로젝트를 나눠서 작업하세요.',
+    selAllTitle:          '전체 선택',
+    selNoneTitle:         '전체 해제',
+    colId:                '컷 번호',
+    colInput:             'sec.frame 입력',
+    leadingZero:          '앞자리 0',
+    colSec:               '초 (sec)',
+    cumLabel:             '누적 :',
+    insRowTitle:          '아래에 행 삽입',
+    delRowTitle:          '행 삭제',
+    addRow:               '＋ 행 추가',
+    totalSum:             '전체 합계',
+    selSum:               n => `선택 ${n}행 합계`,
+    creditLabel:          '제작자 :',
+    importBtn:            '가져오기',
+    importTitle:          'JSON 파일에서 프로젝트 가져오기',
+    exportBtn:            '내보내기',
+    exportTitle:          '현재 프로젝트를 JSON으로 내보내기',
+    exportAllBtn:         '전체 내보내기',
+    exportAllTitle:       '모든 프로젝트를 JSON으로 내보내기',
+    saveFail:             '저장 실패',
+    saveFailQuota:        '저장 실패: 용량 초과',
+    exportNoProject:      '내보낼 프로젝트가 없습니다.',
+    exportUnsaved:        '프로젝트가 저장되지 않았습니다.\n저장 버튼을 먼저 눌러주세요.',
+    importConfirm:        '가져오기를 하면 같은 이름의 프로젝트는 덮어쓰여집니다.\n계속할까요?',
+    importSuccess:        n => `${n}개 프로젝트를 가져왔습니다.`,
+    importFail:           '가져오기 실패: 올바른 JSON 파일이 아닙니다.',
+    delProjConfirm:       name => `"${name}" 프로젝트를 삭제할까요?`,
+    invalidChars:         '프로젝트 이름에 다음 문자는 사용할 수 없습니다:\n/ \\ : * ? " < > |',
+  },
+  en: {
+    customFpsPlaceholder: 'Custom',
+    customFpsTitle:       'Integer 1–99',
+    numModeLabel:         'Number only:',
+    numModeFrame:         'Frame',
+    numModeSec:           'Sec',
+    themeTitle:           'Toggle light/dark mode',
+    projectLabel:         'Project',
+    projNamePlaceholder:  'Enter name...',
+    saveProjBtn:          'Save',
+    loadProjDefault:      'Load ▾',
+    delProjTitle:         'Delete project',
+    syncWarning:          'This project is too large to sync. It is saved on this device only. To enable sync, split it into smaller projects.',
+    selAllTitle:          'Select all',
+    selNoneTitle:         'Deselect all',
+    colId:                'Cut #',
+    colInput:             'sec.frame input',
+    leadingZero:          'Leading zero',
+    colSec:               'Sec (sec)',
+    cumLabel:             'Total:',
+    insRowTitle:          'Insert row below',
+    delRowTitle:          'Delete row',
+    addRow:               '＋ Add row',
+    totalSum:             'Total',
+    selSum:               n => `${n} rows selected`,
+    creditLabel:          'Made by:',
+    importBtn:            'Import',
+    importTitle:          'Import projects from JSON file',
+    exportBtn:            'Export',
+    exportTitle:          'Export current project to JSON',
+    exportAllBtn:         'Export all',
+    exportAllTitle:       'Export all projects to JSON',
+    saveFail:             'Save failed',
+    saveFailQuota:        'Save failed: storage quota exceeded',
+    exportNoProject:      'No projects to export.',
+    exportUnsaved:        'Project is not saved.\nPlease click the Save button first.',
+    importConfirm:        'Importing will overwrite projects with the same name.\nContinue?',
+    importSuccess:        n => `${n} project(s) imported.`,
+    importFail:           'Import failed: not a valid JSON file.',
+    delProjConfirm:       name => `Delete "${name}"?`,
+    invalidChars:         'Project name cannot contain:\n/ \\ : * ? " < > |',
+  },
+  ja: {
+    customFpsPlaceholder: 'カスタム',
+    customFpsTitle:       '1〜99の整数',
+    numModeLabel:         '数字のみ入力時',
+    numModeFrame:         'フレーム',
+    numModeSec:           '秒',
+    themeTitle:           'ライト/ダークモード切替',
+    projectLabel:         'プロジェクト',
+    projNamePlaceholder:  '名前を入力...',
+    saveProjBtn:          '保存',
+    loadProjDefault:      '読み込む ▾',
+    delProjTitle:         'プロジェクト削除',
+    syncWarning:          'このプロジェクトはサイズが大きすぎて同期できません。このデバイスにのみ保存されます。同期を希望する場合はプロジェクトを分けて作業してください。',
+    selAllTitle:          '全て選択',
+    selNoneTitle:         '全て解除',
+    colId:                'カット番号',
+    colInput:             'sec.frame 入力',
+    leadingZero:          '先頭ゼロ',
+    colSec:               '秒 (sec)',
+    cumLabel:             '累計 :',
+    insRowTitle:          '下に行を挿入',
+    delRowTitle:          '行を削除',
+    addRow:               '＋ 行を追加',
+    totalSum:             '合計',
+    selSum:               n => `選択 ${n}行の合計`,
+    creditLabel:          '制作者 :',
+    importBtn:            '読み込む',
+    importTitle:          'JSONファイルからプロジェクトを読み込む',
+    exportBtn:            '書き出す',
+    exportTitle:          '現在のプロジェクトをJSONに書き出す',
+    exportAllBtn:         '全て書き出す',
+    exportAllTitle:       '全プロジェクトをJSONに書き出す',
+    saveFail:             '保存失敗',
+    saveFailQuota:        '保存失敗: 容量超過',
+    exportNoProject:      '書き出すプロジェクトがありません。',
+    exportUnsaved:        'プロジェクトが保存されていません。\n先に保存ボタンを押してください。',
+    importConfirm:        '読み込むと同名のプロジェクトは上書きされます。\n続けますか？',
+    importSuccess:        n => `${n}件のプロジェクトを読み込みました。`,
+    importFail:           '読み込み失敗: 正しいJSONファイルではありません。',
+    delProjConfirm:       name => `"${name}" を削除しますか？`,
+    invalidChars:         'プロジェクト名に以下の文字は使用できません:\n/ \\ : * ? " < > |',
+  },
+};
+
+function t(key, ...args) {
+  const val = LANG[G.lang][key];
+  return typeof val === 'function' ? val(...args) : val;
 }
 
 
@@ -193,7 +333,7 @@ function render() {
 
     const btnIns = document.createElement('button');
     btnIns.className = 'btn-i';
-    btnIns.title = '아래에 행 삽입';
+    btnIns.title = t('insRowTitle');
     btnIns.textContent = '+';
     btnIns.addEventListener('click', () => {
       G.rows.splice(idx + 1, 0, newRow());
@@ -205,7 +345,7 @@ function render() {
     if (G.rows.length > 1) {
       const btnDel = document.createElement('button');
       btnDel.className = 'btn-d';
-      btnDel.title = '행 삭제';
+      btnDel.title = t('delRowTitle');
       btnDel.textContent = '×';
       btnDel.addEventListener('click', () => {
         G.sel.delete(row.uid);
@@ -226,7 +366,7 @@ function render() {
   const trSum = document.createElement('tr');
   trSum.id = 'sum-row';
   trSum.innerHTML = `
-    <td colspan="2" class="sum-row-label">누적 :</td>
+    <td colspan="2" class="sum-row-label">${t('cumLabel')}</td>
     <td class="col-input">
       <div class="cum-display" id="cum-sf-display">
         <span class="cum-label">∑</span>
@@ -294,11 +434,11 @@ function updateSummary() {
     const selTF = G.rows
       .filter(r => G.sel.has(r.uid))
       .reduce((acc, r) => acc + parseFrames(r.input), 0);
-    labelEl.textContent = `선택 ${G.sel.size}행 합계`;
+    labelEl.textContent = t('selSum', G.sel.size);
     secEl.textContent   = fmtSec(selTF) + ' sec';
     sfEl.textContent    = fmtSF(selTF);
   } else {
-    labelEl.textContent = '전체 합계';
+    labelEl.textContent = t('totalSum');
     secEl.textContent   = totalTF > 0 ? fmtSec(totalTF) + ' sec' : '';
     sfEl.textContent    = fmtSF(totalTF);
   }
@@ -368,7 +508,7 @@ function saveProjToStorage(key, snap) {
       // sync 실패 → local 저장
       chrome.storage.local.set({ [storageKey]: compressed }, () => {
         if (chrome.runtime.lastError) {
-          showSaveError('저장 실패');
+          showSaveError(t('saveFail'));
         } else {
           G.localProjs.add(key);
           chrome.storage.sync.remove(storageKey);  // sync 쪽 잔여 데이터 정리
@@ -455,6 +595,62 @@ function syncSettingsUI() {
 }
 
 
+/** UI 전체를 현재 언어로 갱신 */
+function applyLang() {
+  document.documentElement.lang = G.lang;
+
+  // ─ Top bar ─
+  const cFps = document.getElementById('custom-fps');
+  cFps.placeholder = t('customFpsPlaceholder');
+  cFps.title       = t('customFpsTitle');
+  document.querySelector('.num-mode-group .lbl').textContent = t('numModeLabel');
+  document.querySelectorAll('.num-mode-btn').forEach(b => {
+    b.textContent = b.dataset.mode === 'frame' ? t('numModeFrame') : t('numModeSec');
+  });
+  document.getElementById('btn-theme').title = t('themeTitle');
+
+  // ─ Project bar ─
+  document.querySelector('.proj-bar .lbl').textContent = t('projectLabel');
+  document.getElementById('proj-name').placeholder = t('projNamePlaceholder');
+  const saveBtn = document.getElementById('btn-save-proj');
+  saveBtn.textContent = t('saveProjBtn');
+  saveBtn.title       = t('saveProjBtn');
+  document.getElementById('proj-list').options[0].textContent = t('loadProjDefault');
+  document.getElementById('btn-del-proj').title = t('delProjTitle');
+
+  // ─ Sync warning ─
+  document.querySelector('.sync-warning-msg').textContent = t('syncWarning');
+
+  // ─ Table header ─
+  document.getElementById('btn-sel-all').title  = t('selAllTitle');
+  document.getElementById('btn-sel-none').title = t('selNoneTitle');
+  document.querySelector('th.col-id').textContent          = t('colId');
+  document.querySelector('th.col-input div').textContent   = t('colInput');
+  document.querySelector('.toggle-lz span').textContent    = t('leadingZero');
+  document.querySelector('th.col-sec').textContent         = t('colSec');
+
+  // ─ Bottom bar ─
+  document.getElementById('btn-add-row').textContent = t('addRow');
+
+  // ─ Footer ─
+  document.querySelector('.credit-text').childNodes[0].textContent = t('creditLabel') + ' ';
+  const importBtn = document.getElementById('btn-import');
+  importBtn.textContent = t('importBtn');
+  importBtn.title       = t('importTitle');
+  const exportBtn = document.getElementById('btn-export');
+  exportBtn.textContent = t('exportBtn');
+  exportBtn.title       = t('exportTitle');
+  const exportAllBtn = document.getElementById('btn-export-all');
+  exportAllBtn.textContent = t('exportAllBtn');
+  exportAllBtn.title       = t('exportAllTitle');
+
+  // ─ 언어 버튼 active 상태 ─
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === G.lang);
+  });
+}
+
+
 // ═══════════════════════════════════════════════
 // Import / Export
 // ═══════════════════════════════════════════════
@@ -464,7 +660,7 @@ function exportProjects(all = false) {
   if (all) {
     // B-2: 내보낼 프로젝트가 없을 때
     if (Object.keys(G.projects).length === 0) {
-      alert('내보낼 프로젝트가 없습니다.');
+      alert(t('exportNoProject'));
       return;
     }
     data     = { version: 1, projects: G.projects };
@@ -473,7 +669,7 @@ function exportProjects(all = false) {
     // A-3: 이름을 입력했지만 저장 버튼을 누르지 않은 상태
     const nameInput = document.getElementById('proj-name').value.trim();
     if (!G.proj && nameInput) {
-      alert('프로젝트가 저장되지 않았습니다.\n저장 버튼을 먼저 눌러주세요.');
+      alert(t('exportUnsaved'));
       return;
     }
     const key  = G.proj || '__auto__';
@@ -494,7 +690,7 @@ function exportProjects(all = false) {
 }
 
 function importProjects(file) {
-  if (!confirm('가져오기를 하면 같은 이름의 프로젝트는 덮어쓰여집니다.\n계속할까요?')) return;
+  if (!confirm(t('importConfirm'))) return;
   const reader = new FileReader();
   reader.onload = e => {
     try {
@@ -517,9 +713,9 @@ function importProjects(file) {
         syncSettingsUI();
         render();
       }
-      alert(`${count}개 프로젝트를 가져왔습니다.`);
+      alert(t('importSuccess', count));
     } catch {
-      alert('가져오기 실패: 올바른 JSON 파일이 아닙니다.');
+      alert(t('importFail'));
     }
   };
   reader.readAsText(file);
@@ -533,6 +729,17 @@ function importProjects(file) {
 function init() {
   // 기본 행 3개
   G.rows = [newRow(), newRow(), newRow()];
+
+  // ── 언어 토글 ──
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.lang === G.lang) return;
+      G.lang = btn.dataset.lang;
+      chrome.storage.sync.set({ lang: G.lang });
+      applyLang();
+      render();
+    });
+  });
 
   // ── 테마 토글 ──
   document.getElementById('btn-theme').addEventListener('click', () => {
@@ -592,7 +799,7 @@ function init() {
     if (!name) return;
     // E-1/E-2: 파일명에 쓸 수 없는 특수문자 차단
     if (/[/\\:*?"<>|]/.test(name)) {
-      alert('프로젝트 이름에 다음 문자는 사용할 수 없습니다:\n/ \\ : * ? " < > |');
+      alert(t('invalidChars'));
       return;
     }
     G.proj = name;
@@ -616,7 +823,7 @@ function init() {
   document.getElementById('btn-del-proj').addEventListener('click', () => {
     const name = G.proj;
     if (!name || name === '__auto__') return;
-    if (!confirm(`"${name}" 프로젝트를 삭제할까요?`)) return;
+    if (!confirm(t('delProjConfirm', name))) return;
     delete G.projects[name];
     G.localProjs.delete(name);
     G.proj = '';
@@ -638,6 +845,8 @@ function init() {
   // ── 저장된 데이터 불러오기 ──
   chrome.storage.sync.get(null, syncData => {
     applyTheme(syncData.theme || 'dark');
+    G.lang = syncData.lang || 'ko';
+    applyLang();
 
     // sync 프로젝트 로드
     Object.entries(syncData).forEach(([key, val]) => {

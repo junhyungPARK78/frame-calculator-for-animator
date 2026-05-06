@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "프레임 계산기",
-  "version": "1.0.0",
-  "description": "애니메이션 작업용 프레임/타임코드 계산기",
+  "name": "Frame Calculator",
+  "version": "0.1.1",
+  "description": "Frame/timecode calculator for animation production",
   "action": {
-    "default_title": "프레임 계산기"
+    "default_title": "Frame Calculator"
   },
   "side_panel": {
     "default_path": "popup.html"
