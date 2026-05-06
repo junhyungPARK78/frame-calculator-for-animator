@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "프레임 계산기",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "애니메이션 작업용 프레임/타임코드 계산기",
   "action": {
     "default_title": "프레임 계산기"
