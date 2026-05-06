@@ -6,7 +6,7 @@
 
 従来のGoogleスプレッドシートベースのツールで発生していた小数点表記の混乱（`4.70` → 4秒7フレーム？4秒70フレーム？）を解消するために制作しました。
 
-![preview](assets/preview.png)
+![preview](assets/preview.ja.png)
 
 ---
 
