@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "프레임 계산기",
+    "description": "Extension name shown in Chrome Web Store and browser."
+  },
+  "appDescription": {
+    "message": "애니메이션 제작용 프레임/타임코드 계산기.",
+    "description": "Extension description shown in Chrome Web Store."
+  }
+}
