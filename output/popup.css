@@ -102,6 +102,28 @@ body {
 #custom-fps::-webkit-inner-spin-button,
 #custom-fps::-webkit-outer-spin-button { -webkit-appearance: none; }
 
+/* ── 언어 토글 버튼 ── */
+.lang-group {
+  display: flex;
+  gap: 3px;
+  margin-left: 6px;
+}
+
+.lang-btn {
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg3);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.lang-btn:hover  { border-color: var(--accent); color: var(--accent); }
+.lang-btn.active { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
 /* ── 테마 토글 버튼 ── */
 #btn-theme {
   margin-left: 6px;
