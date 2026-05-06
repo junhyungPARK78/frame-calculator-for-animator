@@ -1,6 +1,6 @@
 # フレーム計算機 (Frame Calculator)
 
-[한국어](README.md) | [日本語](README.ja.md)
+[한국어](README.md) | [日本語](README.ja.md) | [English](README.en.md)
 
 アニメーション制作向けのフレーム/タイムコード計算機 Chrome 拡張機能です。
 

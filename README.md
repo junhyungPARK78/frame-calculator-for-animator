@@ -1,6 +1,6 @@
 # 프레임 계산기 (Frame Calculator)
 
-[한국어](README.md) | [日本語](README.ja.md)
+[한국어](README.md) | [日本語](README.ja.md) | [English](README.en.md)
 
 애니메이션 작업용 프레임/타임코드 계산기 Chrome 확장 프로그램입니다.
 
