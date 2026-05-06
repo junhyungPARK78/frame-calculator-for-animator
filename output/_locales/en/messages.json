@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Frame Calculator",
+    "description": "Extension name shown in Chrome Web Store and browser."
+  },
+  "appDescription": {
+    "message": "Frame/timecode calculator for animation production.",
+    "description": "Extension description shown in Chrome Web Store."
+  }
+}

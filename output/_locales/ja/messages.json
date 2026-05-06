@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "フレーム計算機",
+    "description": "Extension name shown in Chrome Web Store and browser."
+  },
+  "appDescription": {
+    "message": "アニメーション制作向けのフレーム/タイムコード計算機。",
+    "description": "Extension description shown in Chrome Web Store."
+  }
+}
