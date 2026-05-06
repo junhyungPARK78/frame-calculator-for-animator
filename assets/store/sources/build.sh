@@ -27,12 +27,11 @@ if [[ ! -x "$CHROME" ]]; then
   exit 1
 fi
 
-# Source mapping: locale → original-preview-filename.
-# (ko uses preview.png — no .ko suffix — for legacy-compat; en/ja use preview.<locale>.png)
+# Source mapping: locale → original-preview-filename (assets/preview.<locale>.png).
 src_for() {
   case "$1" in
     en) echo "preview.en.png" ;;
-    ko) echo "preview.png" ;;
+    ko) echo "preview.ko.png" ;;
     ja) echo "preview.ja.png" ;;
     *)  echo "✗ unknown locale: $1" >&2; exit 1 ;;
   esac

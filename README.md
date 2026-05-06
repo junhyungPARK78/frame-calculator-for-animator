@@ -6,7 +6,7 @@
 
 기존 구글 시트 기반 도구에서 소수점 표기 혼동(`4.70` → 4초 7프레임? 4초 70프레임?) 문제를 해결하기 위해 제작했습니다.
 
-![preview](assets/preview.png)
+![preview](assets/preview.ko.png)
 
 ---
 
