@@ -1,8 +1,12 @@
 # 프레임 계산기 (Frame Calculator)
 
+[한국어](README.md) | [日本語](README.ja.md)
+
 애니메이션 작업용 프레임/타임코드 계산기 Chrome 확장 프로그램입니다.
 
 기존 구글 시트 기반 도구에서 소수점 표기 혼동(`4.70` → 4초 7프레임? 4초 70프레임?) 문제를 해결하기 위해 제작했습니다.
+
+![preview](assets/preview.png)
 
 ---
 
