@@ -39,7 +39,6 @@ const LANG = {
     projectLabel:         '프로젝트',
     projNamePlaceholder:  '이름 입력...',
     saveProjBtn:          '저장',
-    loadProjDefault:      '불러오기 ▾',
     delProjTitle:         '프로젝트 삭제',
     syncWarning:          '이 프로젝트는 파일이 너무 커서 동기화할 수 없습니다. 이 기기에만 저장됩니다. 동기화를 원하면 프로젝트를 나눠서 작업하세요.',
     selAllTitle:          '전체 선택',
@@ -70,6 +69,16 @@ const LANG = {
     importFail:           '가져오기 실패: 올바른 JSON 파일이 아닙니다.',
     delProjConfirm:       name => `"${name}" 프로젝트를 삭제할까요?`,
     invalidChars:         '프로젝트 이름에 다음 문자는 사용할 수 없습니다:\n/ \\ : * ? " < > |',
+    manageProjBtn:        '☰',
+    manageProjTitle:      '프로젝트 목록 관리',
+    projManagerTitle:     '프로젝트 목록',
+    projManagerClose:     '닫기',
+    projManagerEmpty:     '저장된 프로젝트가 없습니다.',
+    loadProjTitle:        '클릭하여 불러오기',
+    renameProjTitle:      '이름 변경',
+    renameConfirm:        '확인',
+    renameCancel:         '취소',
+    renameDuplicate:      name => `"${name}" 이름이 이미 있습니다.`,
   },
   en: {
     customFpsPlaceholder: 'Custom',
@@ -81,7 +90,6 @@ const LANG = {
     projectLabel:         'Project',
     projNamePlaceholder:  'Enter name...',
     saveProjBtn:          'Save',
-    loadProjDefault:      'Load ▾',
     delProjTitle:         'Delete project',
     syncWarning:          'This project is too large to sync. It is saved on this device only. To enable sync, split it into smaller projects.',
     selAllTitle:          'Select all',
@@ -112,6 +120,16 @@ const LANG = {
     importFail:           'Import failed: not a valid JSON file.',
     delProjConfirm:       name => `Delete "${name}"?`,
     invalidChars:         'Project name cannot contain:\n/ \\ : * ? " < > |',
+    manageProjBtn:        '☰',
+    manageProjTitle:      'Manage project list',
+    projManagerTitle:     'Projects',
+    projManagerClose:     'Close',
+    projManagerEmpty:     'No saved projects.',
+    loadProjTitle:        'Click to load',
+    renameProjTitle:      'Rename',
+    renameConfirm:        'OK',
+    renameCancel:         'Cancel',
+    renameDuplicate:      name => `"${name}" already exists.`,
   },
   ja: {
     customFpsPlaceholder: 'カスタム',
@@ -123,7 +141,6 @@ const LANG = {
     projectLabel:         'プロジェクト',
     projNamePlaceholder:  '名前を入力...',
     saveProjBtn:          '保存',
-    loadProjDefault:      '読み込む ▾',
     delProjTitle:         'プロジェクト削除',
     syncWarning:          'このプロジェクトはサイズが大きすぎて同期できません。このデバイスにのみ保存されます。同期を希望する場合はプロジェクトを分けて作業してください。',
     selAllTitle:          '全て選択',
@@ -154,6 +171,16 @@ const LANG = {
     importFail:           '読み込み失敗: 正しいJSONファイルではありません。',
     delProjConfirm:       name => `"${name}" を削除しますか？`,
     invalidChars:         'プロジェクト名に以下の文字は使用できません:\n/ \\ : * ? " < > |',
+    manageProjBtn:        '☰',
+    manageProjTitle:      'プロジェクト一覧管理',
+    projManagerTitle:     'プロジェクト一覧',
+    projManagerClose:     '閉じる',
+    projManagerEmpty:     '保存済みのプロジェクトがありません。',
+    loadProjTitle:        'クリックして読み込む',
+    renameProjTitle:      '名前変更',
+    renameConfirm:        '確認',
+    renameCancel:         'キャンセル',
+    renameDuplicate:      name => `"${name}" はすでに存在します。`,
   },
 };
 
@@ -553,29 +580,12 @@ function showSaveError(msg) {
   showSaveError._t = setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 
-function updateProjList() {
-  const sel   = document.getElementById('proj-list');
-  const saved = sel.value;
-  sel.innerHTML = '<option value="">불러오기 ▾</option>';
-  Object.keys(G.projects)
-    .filter(k => k !== '__auto__')
-    .sort()
-    .forEach(name => {
-      const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      sel.appendChild(opt);
-    });
-  if (saved && saved !== '__auto__') sel.value = saved;
-}
-
 function loadProject(name) {
   if (!G.projects[name]) return;
   G.proj = name;
   document.getElementById('proj-name').value = name;
   applySnapshot(G.projects[name]);
   syncSettingsUI();
-  updateProjList();
   updateSyncWarningUI();
   chrome.storage.sync.set({ currentProject: name });
   render();
@@ -615,8 +625,12 @@ function applyLang() {
   const saveBtn = document.getElementById('btn-save-proj');
   saveBtn.textContent = t('saveProjBtn');
   saveBtn.title       = t('saveProjBtn');
-  document.getElementById('proj-list').options[0].textContent = t('loadProjDefault');
-  document.getElementById('btn-del-proj').title = t('delProjTitle');
+  const manageBtn = document.getElementById('btn-manage-proj');
+  manageBtn.textContent = t('manageProjBtn');
+  manageBtn.title       = t('manageProjTitle');
+  document.getElementById('proj-manager-title').textContent = t('projManagerTitle');
+  document.getElementById('btn-close-proj-manager').title   = t('projManagerClose');
+  document.getElementById('proj-manager-empty').textContent = t('projManagerEmpty');
 
   // ─ Sync warning ─
   document.querySelector('.sync-warning-msg').textContent = t('syncWarning');
@@ -648,6 +662,186 @@ function applyLang() {
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.lang === G.lang);
   });
+
+  // ─ 모달이 열려있으면 목록 재렌더 (버튼 title 언어 반영) ─
+  if (document.getElementById('proj-manager-modal').style.display !== 'none') {
+    commitCurrentRename();
+    renderProjManagerList();
+  }
+}
+
+
+// ═══════════════════════════════════════════════
+// 프로젝트 목록 관리 모달
+// ═══════════════════════════════════════════════
+
+function openProjManager() {
+  renderProjManagerList();
+  document.getElementById('proj-manager-modal').style.display = 'flex';
+}
+
+function closeProjManager() {
+  document.getElementById('proj-manager-modal').style.display = 'none';
+}
+
+function renderProjManagerList() {
+  const ul    = document.getElementById('proj-manager-list');
+  const empty = document.getElementById('proj-manager-empty');
+  ul.innerHTML = '';
+
+  const names = Object.keys(G.projects).filter(k => k !== '__auto__').sort();
+
+  if (names.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  names.forEach(name => {
+    const li = document.createElement('li');
+    li.className = 'proj-manager-item';
+
+    const isCurrent = name === G.proj;
+    const span = document.createElement('span');
+    span.className = 'proj-item-name' + (isCurrent ? ' proj-item-current' : '');
+    span.textContent = name;
+    span.title = t('loadProjTitle');
+    span.addEventListener('click', () => {
+      loadProject(name);
+      closeProjManager();
+    });
+
+    li.dataset.projName = name;
+
+    const btnRename = document.createElement('button');
+    btnRename.className = 'btn-proj-action btn-proj-rename';
+    btnRename.title = t('renameProjTitle');
+    btnRename.textContent = '✏';
+    btnRename.addEventListener('click', () => startRename(name));
+
+    const btnDelete = document.createElement('button');
+    btnDelete.className = 'btn-proj-action btn-proj-delete';
+    btnDelete.title = t('delProjTitle');
+    btnDelete.textContent = '✕';
+    btnDelete.addEventListener('click', () => deleteProjectFromList(name));
+
+    li.appendChild(span);
+    li.appendChild(btnRename);
+    li.appendChild(btnDelete);
+    ul.appendChild(li);
+  });
+}
+
+function findProjManagerLi(name) {
+  for (const li of document.querySelectorAll('#proj-manager-list .proj-manager-item')) {
+    if (li.dataset.projName === name) return li;
+  }
+  return null;
+}
+
+function commitCurrentRename() {
+  const inp = document.querySelector('#proj-manager-list .proj-item-rename-input');
+  if (!inp) return;
+  const prevOldName = inp.dataset.oldName;
+  const prevNewName = inp.value.trim();
+  if (prevNewName && prevNewName !== prevOldName &&
+      !/[/\\:*?"<>|]/.test(prevNewName) && G.projects[prevNewName] === undefined) {
+    renameProject(prevOldName, prevNewName);  // 내부에서 renderProjManagerList() 호출
+  } else {
+    renderProjManagerList();  // 유효하지 않으면 revert
+  }
+}
+
+function startRename(oldName) {
+  const existingInp = document.querySelector('#proj-manager-list .proj-item-rename-input');
+  if (existingInp && existingInp.dataset.oldName !== oldName) {
+    commitCurrentRename();  // 다른 프로젝트 편집 중이면 먼저 커밋 (리렌더 포함)
+  }
+  const li = findProjManagerLi(oldName);
+  if (!li) return;
+  enterRenameMode(li, oldName);
+}
+
+function enterRenameMode(li, oldName) {
+  li.innerHTML = '';
+
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'proj-item-rename-input';
+  inp.value = oldName;
+  inp.dataset.oldName = oldName;
+
+  const btnOk = document.createElement('button');
+  btnOk.className = 'btn-proj-action btn-proj-confirm';
+  btnOk.title = t('renameConfirm');
+  btnOk.textContent = '✓';
+
+  const btnCancel = document.createElement('button');
+  btnCancel.className = 'btn-proj-action btn-proj-cancel';
+  btnCancel.title = t('renameCancel');
+  btnCancel.textContent = '✕';
+
+  function doRename() {
+    const newName = inp.value.trim();
+    if (!newName || newName === oldName) { renderProjManagerList(); return; }
+    if (/[/\\:*?"<>|]/.test(newName)) { alert(t('invalidChars')); inp.focus(); return; }
+    if (G.projects[newName] !== undefined) { alert(t('renameDuplicate', newName)); inp.focus(); return; }
+    renameProject(oldName, newName);
+  }
+
+  btnOk.addEventListener('click', doRename);
+  btnCancel.addEventListener('click', () => renderProjManagerList());
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.preventDefault(); doRename(); }
+    if (e.key === 'Escape') renderProjManagerList();
+  });
+
+  li.appendChild(inp);
+  li.appendChild(btnOk);
+  li.appendChild(btnCancel);
+  inp.focus();
+  inp.select();
+}
+
+function renameProject(oldName, newName) {
+  G.projects[newName] = G.projects[oldName];
+  delete G.projects[oldName];
+
+  if (G.localProjs.has(oldName)) {
+    G.localProjs.delete(oldName);
+    G.localProjs.add(newName);
+  }
+
+  saveProjToStorage(newName, G.projects[newName]);
+  chrome.storage.sync.remove('proj__' + oldName);
+  chrome.storage.local.remove('proj__' + oldName);
+
+  if (G.proj === oldName) {
+    G.proj = newName;
+    document.getElementById('proj-name').value = newName;
+    chrome.storage.sync.set({ currentProject: newName });
+  }
+
+  renderProjManagerList();
+}
+
+function deleteProjectFromList(name) {
+  if (!confirm(t('delProjConfirm', name))) return;
+
+  delete G.projects[name];
+  G.localProjs.delete(name);
+  chrome.storage.sync.remove('proj__' + name);
+  chrome.storage.local.remove('proj__' + name);
+
+  if (G.proj === name) {
+    G.proj = '';
+    document.getElementById('proj-name').value = '';
+    chrome.storage.sync.set({ currentProject: '' });
+    updateSyncWarningUI();
+    saveState();
+  }
+
+  renderProjManagerList();
 }
 
 
@@ -705,7 +899,7 @@ function importProjects(file) {
         saveProjToStorage(name, snap);
         count++;
       });
-      updateProjList();
+      renderProjManagerList();
       // C-5: 현재 열린 프로젝트가 덮어씌워진 경우 화면 갱신
       const currentKey = G.proj || '__auto__';
       if (importedKeys.includes(currentKey) && G.projects[currentKey]) {
@@ -804,7 +998,7 @@ function init() {
     }
     G.proj = name;
     saveState();
-    updateProjList();
+    renderProjManagerList();
   }
 
   document.getElementById('btn-save-proj').addEventListener('click', saveProjectFromInput);
@@ -813,26 +1007,11 @@ function init() {
     if (e.key === 'Enter') { e.preventDefault(); saveProjectFromInput(); }
   });
 
-  // ── 프로젝트 불러오기 ──
-  document.getElementById('proj-list').addEventListener('change', e => {
-    if (e.target.value) loadProject(e.target.value);
-    e.target.value = '';  // 선택 초기화
-  });
-
-  // ── 프로젝트 삭제 ──
-  document.getElementById('btn-del-proj').addEventListener('click', () => {
-    const name = G.proj;
-    if (!name || name === '__auto__') return;
-    if (!confirm(t('delProjConfirm', name))) return;
-    delete G.projects[name];
-    G.localProjs.delete(name);
-    G.proj = '';
-    document.getElementById('proj-name').value = '';
-    chrome.storage.sync.remove('proj__' + name);
-    chrome.storage.local.remove('proj__' + name);
-    chrome.storage.sync.set({ currentProject: '' });
-    updateProjList();
-    saveState();  // 현재 rows를 __auto__에 보존
+  // ── 프로젝트 목록 관리 모달 ──
+  document.getElementById('btn-manage-proj').addEventListener('click', openProjManager);
+  document.getElementById('btn-close-proj-manager').addEventListener('click', closeProjManager);
+  document.getElementById('proj-manager-modal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeProjManager();
   });
 
   // ── 행 추가 ──
@@ -890,7 +1069,6 @@ function init() {
         document.getElementById('proj-name').value = (last === '__auto__') ? '' : last;
         syncSettingsUI();
       }
-      updateProjList();
       updateSyncWarningUI();
       render();
     });

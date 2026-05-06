@@ -35,8 +35,7 @@
     <span class="lbl">프로젝트</span>
     <input id="proj-name" type="text" placeholder="이름 입력...">
     <button id="btn-save-proj" class="btn-save" title="저장">저장</button>
-    <select id="proj-list"><option value="">불러오기 ▾</option></select>
-    <button id="btn-del-proj" class="btn-danger" title="프로젝트 삭제">✕</button>
+    <button id="btn-manage-proj" title="프로젝트 목록 관리">☰</button>
   </div>
 
   <!-- ── 싱크 불가 경고 배너 ── -->
@@ -92,6 +91,18 @@
       <button id="btn-export" title="현재 프로젝트를 JSON으로 내보내기">내보내기</button>
       <button id="btn-export-all" title="모든 프로젝트를 JSON으로 내보내기">전체 내보내기</button>
       <input id="import-file" type="file" accept=".json">
+    </div>
+  </div>
+
+  <!-- ── 프로젝트 관리 모달 ── -->
+  <div id="proj-manager-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span id="proj-manager-title" class="modal-title">프로젝트 목록</span>
+        <button id="btn-close-proj-manager" title="닫기">✕</button>
+      </div>
+      <ul id="proj-manager-list"></ul>
+      <p id="proj-manager-empty" class="proj-manager-empty" style="display:none">저장된 프로젝트가 없습니다.</p>
     </div>
   </div>
 
