@@ -1,0 +1,52 @@
+name: Release on version bump
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - output/manifest.json
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get current version
+        id: current
+        run: echo "version=$(jq -r .version output/manifest.json)" >> $GITHUB_OUTPUT
+
+      - name: Get previous version
+        id: previous
+        run: echo "version=$(git show HEAD~1:output/manifest.json | jq -r .version)" >> $GITHUB_OUTPUT
+
+      - name: Check version changed
+        id: check
+        run: |
+          if [ "${{ steps.current.outputs.version }}" != "${{ steps.previous.outputs.version }}" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Zip extension
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          cd output
+          zip -r ../frame-calculator-v${{ steps.current.outputs.version }}.zip .
+
+      - name: Create GitHub Release
+        if: steps.check.outputs.changed == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.current.outputs.version }}
+          name: v${{ steps.current.outputs.version }}
+          files: frame-calculator-v${{ steps.current.outputs.version }}.zip
+          generate_release_notes: true
